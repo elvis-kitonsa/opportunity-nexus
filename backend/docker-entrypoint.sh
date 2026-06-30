@@ -25,12 +25,8 @@ else:
     raise SystemExit("Postgres did not become ready in time.")
 PY
 
-# Auto-generate an initial migration on first boot if none exists, then upgrade.
-if [ -z "$(ls -A alembic/versions/*.py 2>/dev/null)" ]; then
-    echo "No migrations found — generating the initial schema migration..."
-    alembic revision --autogenerate -m "initial schema"
-fi
-
+# Apply version-controlled migrations. The schema is owned by the committed
+# Alembic revisions (see alembic/versions/), so we never autogenerate at runtime.
 echo "Applying migrations..."
 alembic upgrade head
 
