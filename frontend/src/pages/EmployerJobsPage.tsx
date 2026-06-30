@@ -3,6 +3,17 @@ import { Link } from "react-router-dom";
 
 import { useCreateJob, useMyJobs } from "../api/hooks";
 import { apiErrorMessage } from "../lib/apiClient";
+import { Briefcase, Plus, Users, X } from "../components/icons";
+import { CardSkeletons, EmptyState, ErrorText, PageHeading, Spinner } from "../components/ui";
+import type { JobStatus } from "../types";
+
+const STATUS_META: Record<JobStatus, { label: string; className: string }> = {
+  draft: { label: "Draft", className: "bg-slate-100 text-slate-600" },
+  pending_review: { label: "Pending review", className: "bg-amber-100 text-amber-700" },
+  published: { label: "Published", className: "bg-green-100 text-green-700" },
+  rejected: { label: "Rejected", className: "bg-red-100 text-red-700" },
+  closed: { label: "Closed", className: "bg-slate-200 text-slate-600" },
+};
 
 interface SkillRow {
   name: string;
@@ -45,16 +56,27 @@ export function EmployerJobsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">My listings</h1>
-        <button className="btn-primary" onClick={() => setShowForm((v) => !v)}>
-          {showForm ? "Cancel" : "+ New listing"}
-        </button>
-      </div>
+      <PageHeading
+        title="My listings"
+        subtitle="Post roles with weighted skill criteria and review ranked applicants."
+        actions={
+          <button className="btn-primary" onClick={() => setShowForm((v) => !v)}>
+            {showForm ? (
+              <>
+                <X className="h-4 w-4" /> Cancel
+              </>
+            ) : (
+              <>
+                <Plus className="h-4 w-4" /> New listing
+              </>
+            )}
+          </button>
+        }
+      />
 
       {showForm && (
         <div className="card mb-6 space-y-4">
-          {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+          {error && <ErrorText>{error}</ErrorText>}
           <div>
             <label className="label">Title</label>
             <input className="input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
@@ -122,19 +144,25 @@ export function EmployerJobsPage() {
                     />
                     required
                   </label>
-                  <button type="button" className="btn-secondary" onClick={() => setSkills((s) => s.filter((_, j) => j !== i))}>
-                    ✕
+                  <button type="button" className="btn-secondary px-2.5" title="Remove skill" onClick={() => setSkills((s) => s.filter((_, j) => j !== i))}>
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               ))}
             </div>
             <button type="button" className="btn-secondary mt-2" onClick={() => setSkills((s) => [...s, { name: "", importance: 3, is_required: false }])}>
-              + Add skill
+              <Plus className="h-4 w-4" /> Add skill
             </button>
           </div>
 
           <button className="btn-primary" onClick={handleCreate} disabled={createJob.isPending}>
-            {createJob.isPending ? "Creating…" : "Create listing"}
+            {createJob.isPending ? (
+              <>
+                <Spinner className="h-4 w-4" /> Creating…
+              </>
+            ) : (
+              "Create listing"
+            )}
           </button>
           <p className="text-xs text-slate-500">
             New listings start as “pending review” until an admin publishes them.
@@ -143,28 +171,45 @@ export function EmployerJobsPage() {
       )}
 
       {isLoading ? (
-        <p className="text-slate-500">Loading…</p>
+        <CardSkeletons count={3} />
+      ) : jobs && jobs.length === 0 ? (
+        <EmptyState
+          icon={<Briefcase className="h-6 w-6" />}
+          title="No listings yet"
+          description="Post your first role to start matching with skilled graduates."
+          action={
+            !showForm && (
+              <button className="btn-primary" onClick={() => setShowForm(true)}>
+                <Plus className="h-4 w-4" /> New listing
+              </button>
+            )
+          }
+        />
       ) : (
         <ul className="space-y-3">
-          {jobs?.length === 0 && <p className="text-slate-500">No listings yet.</p>}
-          {jobs?.map((job) => (
-            <li key={job.id} className="card flex items-center justify-between gap-4">
-              <div>
-                <p className="font-semibold">{job.title}</p>
-                <p className="text-sm text-slate-600">
-                  {job.location ?? "—"} · {job.skills.length} skill(s)
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="rounded bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
-                  {job.status.replace("_", " ")}
-                </span>
-                <Link to={`/employer/jobs/${job.id}/applicants`} className="btn-secondary">
-                  Applicants
-                </Link>
-              </div>
-            </li>
-          ))}
+          {jobs?.map((job) => {
+            const meta = STATUS_META[job.status] ?? STATUS_META.draft;
+            return (
+              <li key={job.id} className="card flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-slate-900">{job.title}</p>
+                  <p className="mt-0.5 text-sm text-slate-500">
+                    {job.location ?? "Remote / unspecified"} · {job.skills.length} skill
+                    {job.skills.length === 1 ? "" : "s"}
+                  </p>
+                </div>
+                <div className="flex flex-none items-center gap-3">
+                  <span className={`chip font-semibold ${meta.className}`}>{meta.label}</span>
+                  <Link
+                    to={`/employer/jobs/${job.id}/applicants`}
+                    className="btn-secondary"
+                  >
+                    <Users className="h-4 w-4" /> Applicants
+                  </Link>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
