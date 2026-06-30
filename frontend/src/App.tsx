@@ -6,25 +6,29 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ApplicantsPage } from "./pages/ApplicantsPage";
 import { EmployerJobsPage } from "./pages/EmployerJobsPage";
 import { JobDetailPage } from "./pages/JobDetailPage";
+import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyApplicationsPage } from "./pages/MyApplicationsPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SeekerJobsPage } from "./pages/SeekerJobsPage";
 import { SeekerProfilePage } from "./pages/SeekerProfilePage";
+import { PageLoader } from "./components/ui";
 
-/** Send authenticated users to their role's home; others to login. */
-function HomeRedirect() {
+/** Show the marketing landing page to guests; send signed-in users to their home. */
+function HomeRoute() {
   const { user, loading } = useAuth();
-  if (loading) return <p className="text-slate-500">Loading…</p>;
-  if (!user) return <Navigate to="/login" replace />;
+  if (loading) return <PageLoader />;
+  if (!user) return <LandingPage />;
   return <Navigate to={user.role === "employer" ? "/employer" : "/jobs"} replace />;
 }
 
 export default function App() {
   return (
     <Routes>
+      {/* Standalone landing (its own header/footer) */}
+      <Route path="/" element={<HomeRoute />} />
+
       <Route element={<Layout />}>
-        <Route index element={<HomeRedirect />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
