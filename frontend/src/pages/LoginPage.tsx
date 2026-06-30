@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthContext";
 import { apiErrorMessage } from "../lib/apiClient";
+import { ArrowRight } from "../components/icons";
+import { ErrorText, Spinner } from "../components/ui";
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -27,15 +29,19 @@ export function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold">Log in</h1>
+    <div className="mx-auto max-w-sm py-6">
+      <div className="mb-6 text-center">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Welcome back</h1>
+        <p className="mt-1 text-sm text-slate-500">Log in to see your matches.</p>
+      </div>
       <form onSubmit={handleSubmit} className="card space-y-4">
-        {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+        {error && <ErrorText>{error}</ErrorText>}
         <div>
           <label className="label">Email</label>
           <input
             className="input"
             type="email"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -46,18 +52,27 @@ export function LoginPage() {
           <input
             className="input"
             type="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
         <button className="btn-primary w-full" disabled={submitting}>
-          {submitting ? "Signing in…" : "Log in"}
+          {submitting ? (
+            <>
+              <Spinner className="h-4 w-4" /> Signing in…
+            </>
+          ) : (
+            <>
+              Log in <ArrowRight className="h-4 w-4" />
+            </>
+          )}
         </button>
       </form>
       <p className="mt-4 text-center text-sm text-slate-600">
         No account?{" "}
-        <Link to="/register" className="font-medium text-brand-600">
+        <Link to="/register" className="font-semibold text-brand-600 hover:text-brand-700">
           Create one
         </Link>
       </p>
