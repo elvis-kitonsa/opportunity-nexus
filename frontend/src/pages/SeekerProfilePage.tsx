@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useMySeekerProfile, useUpdateSeekerProfile } from "../api/hooks";
 import { apiErrorMessage } from "../lib/apiClient";
+import { Plus, ShieldCheck, X } from "../components/icons";
+import { ErrorText, PageHeading, PageLoader, Spinner, SuccessText } from "../components/ui";
 
 interface SkillRow {
   name: string;
@@ -40,7 +42,7 @@ export function SeekerProfilePage() {
     setSkills(profile.skills.map((s) => ({ name: s.skill.name, proficiency: s.proficiency })));
   }, [profile]);
 
-  if (isLoading) return <p className="text-slate-500">Loading…</p>;
+  if (isLoading) return <PageLoader />;
 
   function setField(key: keyof typeof form, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -71,16 +73,26 @@ export function SeekerProfilePage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-1 text-2xl font-bold">Your profile</h1>
-      <p className="mb-6 text-sm text-slate-500">
-        {profile?.is_institution_verified
-          ? `Verified · ${profile.institution?.name ?? "institution"}`
-          : "Not yet institution-verified."}
-      </p>
+      <PageHeading
+        title="Your profile"
+        subtitle="A strong profile means sharper matches. Keep your skills up to date."
+        actions={
+          profile?.is_institution_verified ? (
+            <span className="chip bg-green-100 font-semibold text-green-700">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Verified · {profile.institution?.name ?? "institution"}
+            </span>
+          ) : (
+            <span className="chip bg-slate-100 font-medium text-slate-600">
+              Not institution-verified
+            </span>
+          )
+        }
+      />
 
       <div className="card space-y-4">
-        {message && <p className="rounded bg-green-50 px-3 py-2 text-sm text-green-700">{message}</p>}
-        {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+        {message && <SuccessText>{message}</SuccessText>}
+        {error && <ErrorText>{error}</ErrorText>}
 
         <div>
           <label className="label">Full name</label>
@@ -143,25 +155,35 @@ export function SeekerProfilePage() {
                 </select>
                 <button
                   type="button"
-                  className="btn-secondary"
+                  className="btn-secondary px-2.5"
+                  title="Remove skill"
                   onClick={() => setSkills((s) => s.filter((_, j) => j !== i))}
                 >
-                  ✕
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             ))}
+            {skills.length === 0 && (
+              <p className="text-sm text-slate-400">No skills yet — add a few to start matching.</p>
+            )}
           </div>
           <button
             type="button"
             className="btn-secondary mt-2"
             onClick={() => setSkills((s) => [...s, { name: "", proficiency: 3 }])}
           >
-            + Add skill
+            <Plus className="h-4 w-4" /> Add skill
           </button>
         </div>
 
         <button className="btn-primary" onClick={handleSave} disabled={update.isPending}>
-          {update.isPending ? "Saving…" : "Save profile"}
+          {update.isPending ? (
+            <>
+              <Spinner className="h-4 w-4" /> Saving…
+            </>
+          ) : (
+            "Save profile"
+          )}
         </button>
       </div>
     </div>
