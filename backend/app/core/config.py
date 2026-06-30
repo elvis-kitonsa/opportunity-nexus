@@ -1,7 +1,8 @@
 from functools import lru_cache
+from typing import Annotated
 
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -25,10 +26,17 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: Annotated[list[str], NoDecode] = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ]
 
     # Institution email-domain verification
-    VERIFIED_INSTITUTION_DOMAINS: list[str] = ["mak.ac.ug", "kyu.ac.ug", "mubs.ac.ug"]
+    VERIFIED_INSTITUTION_DOMAINS: Annotated[list[str], NoDecode] = [
+        "mak.ac.ug",
+        "kyu.ac.ug",
+        "mubs.ac.ug",
+    ]
 
     @field_validator("BACKEND_CORS_ORIGINS", "VERIFIED_INSTITUTION_DOMAINS", mode="before")
     @classmethod
