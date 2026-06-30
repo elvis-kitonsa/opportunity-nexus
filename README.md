@@ -98,8 +98,8 @@ Services:
 | API docs     | http://localhost:8000/docs           |
 | Django admin | http://localhost:8001 (admin / admin_dev_password) |
 
-On first boot the backend autogenerates and applies the initial Alembic
-migration, then Django applies its own migrations and bootstraps a superuser.
+On first boot the backend applies the committed Alembic migrations, then Django
+applies its own migrations and bootstraps a superuser.
 
 ## Local development (without Docker)
 
@@ -110,8 +110,7 @@ cd backend
 python -m venv .venv && . .venv/Scripts/activate   # on Windows
 pip install -r requirements.txt
 cp .env.example .env                                # point DATABASE_URL at your Postgres
-alembic revision --autogenerate -m "initial schema"
-alembic upgrade head
+alembic upgrade head                                # apply the committed schema
 uvicorn app.main:app --reload
 ```
 
