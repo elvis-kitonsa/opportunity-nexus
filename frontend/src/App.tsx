@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { useAuth } from "./auth/AuthContext";
 import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { SplashScreen } from "./components/SplashScreen";
 import { ApplicantsPage } from "./pages/ApplicantsPage";
 import { EmployerJobsPage } from "./pages/EmployerJobsPage";
 import { JobDetailPage } from "./pages/JobDetailPage";
@@ -23,16 +25,29 @@ function HomeRoute() {
 }
 
 export default function App() {
-  return (
-    <Routes>
-      {/* Standalone landing (its own header/footer) */}
-      <Route path="/" element={<HomeRoute />} />
+  // Show the animated cover once per browser session, before anything else.
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem("nexus_splash_seen"),
+  );
 
-      <Route element={<Layout />}>
+  function finishSplash() {
+    sessionStorage.setItem("nexus_splash_seen", "1");
+    setShowSplash(false);
+  }
+
+  return (
+    <>
+      {showSplash && <SplashScreen onDone={finishSplash} />}
+      <Routes>
+        {/* Standalone landing (its own header/footer) */}
+        <Route path="/" element={<HomeRoute />} />
+
+        {/* Standalone auth (full-screen, own header — no app chrome) */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Seeker */}
+        <Route element={<Layout />}>
+          {/* Seeker */}
         <Route
           path="/jobs"
           element={
@@ -85,7 +100,8 @@ export default function App() {
         />
 
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+        </Route>
+      </Routes>
+    </>
   );
 }
