@@ -14,6 +14,18 @@
 }
 
 @layer components {
+  /* Themed page background: pale-blue wash + faint dotted grid (not plain white). */
+  .app-bg {
+    @apply relative bg-slate-50 bg-app-wash;
+  }
+  .app-bg::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 -z-10 bg-hero-grid opacity-60;
+    background-size: 26px 26px;
+  }
+}
+
+@layer components {
   /* Buttons ----------------------------------------------------------------- */
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
@@ -55,5 +67,70 @@
   }
   .skeleton {
     @apply animate-pulse rounded-md bg-slate-200/70;
+  }
+}
+
+/* Splash / people animations ------------------------------------------------ */
+@keyframes cross {
+  from {
+    transform: translateX(-18vw);
+  }
+  to {
+    transform: translateX(118vw);
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@keyframes rise {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.14) translate(-1.5%, -1.5%);
+  }
+}
+@keyframes loadbar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+.animate-bob {
+  animation: bob 1.1s ease-in-out infinite;
+}
+.animate-rise {
+  animation: rise 0.7s ease-out both;
+}
+.animate-kenburns {
+  animation: kenburns 7s ease-out forwards;
+}
+.splash-fade {
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bob,
+  .animate-rise,
+  [style*="animation"] {
+    animation: none !important;
   }
 }
