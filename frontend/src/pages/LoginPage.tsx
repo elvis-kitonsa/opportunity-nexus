@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthContext";
 import { apiErrorMessage } from "../lib/apiClient";
+import { AuthShell } from "../components/AuthShell";
 import { ArrowRight } from "../components/icons";
 import { ErrorText, Spinner } from "../components/ui";
 
@@ -29,12 +30,21 @@ export function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-sm py-6">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Welcome back</h1>
-        <p className="mt-1 text-sm text-slate-500">Log in to see your matches.</p>
-      </div>
-      <form onSubmit={handleSubmit} className="card space-y-4">
+    <AuthShell
+      title="Welcome back"
+      subtitle="Log in to see your matches."
+      altHref="/register"
+      altLabel="Get started"
+      footer={
+        <>
+          No account?{" "}
+          <Link to="/register" className="font-semibold text-brand-600 hover:text-brand-700">
+            Create one
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
         {error && <ErrorText>{error}</ErrorText>}
         <div>
           <label className="label">Email</label>
@@ -70,12 +80,6 @@ export function LoginPage() {
           )}
         </button>
       </form>
-      <p className="mt-4 text-center text-sm text-slate-600">
-        No account?{" "}
-        <Link to="/register" className="font-semibold text-brand-600 hover:text-brand-700">
-          Create one
-        </Link>
-      </p>
-    </div>
+    </AuthShell>
   );
 }
