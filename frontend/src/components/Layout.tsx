@@ -15,7 +15,7 @@ export function Layout() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="app-bg flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 font-bold text-slate-900">

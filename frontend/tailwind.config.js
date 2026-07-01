@@ -4,24 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Indigo-led brand ramp (Modern SaaS direction).
+        // Bright, sharp corporate-blue brand ramp.
         brand: {
-          50: "#eef2ff",
-          100: "#e0e7ff",
-          200: "#c7d2fe",
-          300: "#a5b4fc",
-          400: "#818cf8",
-          500: "#6366f1",
-          600: "#4f46e5",
-          700: "#4338ca",
-          800: "#3730a3",
-          900: "#312e81",
+          50: "#eef6ff",
+          100: "#d9ecff",
+          200: "#b6d8ff",
+          300: "#83bbff",
+          400: "#4a97ff",
+          500: "#1e7bff",
+          600: "#0a63e6",
+          700: "#0b4fbe",
+          800: "#0f4197",
+          900: "#123670",
         },
-        // Violet accent used in gradients / highlights.
+        // Sky/cyan accent for gradient pop and highlights.
         accent: {
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
+          400: "#38bdf8",
+          500: "#0ea5e9",
+          600: "#0284c7",
         },
       },
       fontFamily: {
@@ -40,13 +40,16 @@ export default {
       boxShadow: {
         card: "0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06)",
         "card-hover":
-          "0 10px 25px -5px rgb(79 70 229 / 0.12), 0 8px 10px -6px rgb(79 70 229 / 0.08)",
-        glow: "0 0 0 1px rgb(99 102 241 / 0.10), 0 12px 32px -8px rgb(99 102 241 / 0.35)",
+          "0 12px 28px -6px rgb(10 99 230 / 0.18), 0 8px 10px -6px rgb(10 99 230 / 0.10)",
+        glow: "0 0 0 1px rgb(30 123 255 / 0.10), 0 14px 36px -8px rgb(30 123 255 / 0.40)",
       },
       backgroundImage: {
-        "brand-gradient": "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+        "brand-gradient": "linear-gradient(135deg, #0a63e6 0%, #1e7bff 55%, #38bdf8 100%)",
         "hero-grid":
-          "radial-gradient(circle at 1px 1px, rgb(99 102 241 / 0.12) 1px, transparent 0)",
+          "radial-gradient(circle at 1px 1px, rgb(30 123 255 / 0.14) 1px, transparent 0)",
+        // Soft page wash: pale blue tint fading to white.
+        "app-wash":
+          "radial-gradient(1100px 500px at 15% -10%, rgb(30 123 255 / 0.10), transparent 60%), radial-gradient(900px 500px at 100% 0%, rgb(56 189 248 / 0.10), transparent 55%)",
       },
       keyframes: {
         "fade-up": {
