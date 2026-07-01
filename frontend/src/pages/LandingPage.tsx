@@ -18,7 +18,9 @@ export function LandingPage() {
       <MarketingHeader />
       <Hero />
       <LogosStrip />
+      <MatchPreviewSection />
       <Features />
+      <AudienceSection />
       <HowItWorks />
       <CtaBanner />
       <MarketingFooter />
@@ -55,34 +57,60 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-hero-grid [background-size:24px_24px]" />
       <div className="absolute inset-x-0 -top-32 -z-10 mx-auto h-72 max-w-3xl rounded-full bg-brand-200/40 blur-3xl" />
-      <div className="mx-auto max-w-6xl px-4 py-20 text-center sm:py-28">
-        <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-          <Sparkles className="h-3.5 w-3.5" />
-          Skills-based matching for early-career talent
-        </span>
-        <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-          Land the role you're{" "}
-          <span className="gradient-text">actually built for.</span>
-        </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
-          Opportunity Nexus matches university and technical-institute graduates to jobs by
-          weighted skill fit — so you see roles ranked by how well you match, and employers
-          see the candidates who can do the work.
-        </p>
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link to="/register" className="btn-primary px-6 py-3 text-base">
-            Get matched
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link to="/login" className="btn-secondary px-6 py-3 text-base">
-            I already have an account
-          </Link>
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 lg:grid-cols-2 lg:py-24">
+        {/* Copy */}
+        <div className="text-center lg:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+            <Sparkles className="h-3.5 w-3.5" />
+            Skills-based matching for early-career talent
+          </span>
+          <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+            Land the role you're{" "}
+            <span className="gradient-text">actually built for.</span>
+          </h1>
+          <p className="mt-5 max-w-xl text-lg text-slate-600 lg:mx-0">
+            Opportunity Nexus matches university and technical-institute graduates to jobs by
+            weighted skill fit — so you see roles ranked by how well you match, and employers
+            see the candidates who can do the work.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+            <Link to="/register" className="btn-primary px-6 py-3 text-base">
+              Get matched
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/login" className="btn-secondary px-6 py-3 text-base">
+              I already have an account
+            </Link>
+          </div>
+          <p className="mt-4 text-xs text-slate-400">
+            Free for job seekers · Verified institution emails get a trust badge
+          </p>
         </div>
-        <p className="mt-4 text-xs text-slate-400">
-          Free for job seekers · Verified institution emails get a trust badge
-        </p>
 
-        <ScoreShowcase />
+        {/* Hero photo (clean — no overlapping card) */}
+        <div className="relative">
+          <div
+            className="relative overflow-hidden rounded-3xl bg-brand-gradient shadow-glow"
+            style={{ aspectRatio: "4 / 3" }}
+          >
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: "url('/images/hero.jpg')" }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(160deg, rgba(9,45,110,0.20) 0%, rgba(9,45,110,0.02) 40%, rgba(6,26,60,0.28) 100%)",
+              }}
+            />
+            {/* small, non-obstructing match badge */}
+            <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 shadow-lg backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-green-500" />
+              <span className="text-sm font-semibold text-slate-800">92% skills match</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -96,8 +124,8 @@ function ScoreShowcase() {
     { title: "Frontend Developer", company: "Andela", score: 64, tone: "amber" },
   ] as const;
   return (
-    <div className="mx-auto mt-16 max-w-xl">
-      <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-glow">
+    <div className="w-full">
+      <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl">
         <div className="mb-2 flex items-center gap-2 px-2 pt-1 text-xs font-medium text-slate-400">
           <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
           <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
@@ -128,6 +156,105 @@ function ScoreShowcase() {
         </ul>
       </div>
     </div>
+  );
+}
+
+/** Photo of a subject with a graceful gradient fallback + rounded frame. */
+function Photo({ src, className = "" }: { src: string; className?: string }) {
+  return (
+    <div className={`relative overflow-hidden rounded-3xl bg-brand-gradient shadow-card ${className}`}>
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${src}')` }} />
+    </div>
+  );
+}
+
+/** Product-style section: the ranked match preview beside an explanation. */
+function MatchPreviewSection() {
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-20">
+      <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="order-2 lg:order-1">
+          <ScoreShowcase />
+        </div>
+        <div className="order-1 lg:order-2">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+            <Target className="h-3.5 w-3.5" /> Explainable matching
+          </span>
+          <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-900">
+            See every role ranked by how well you fit.
+          </h2>
+          <p className="mt-4 text-slate-600">
+            Each listing shows a 0–100% score from weighted skill overlap — plus exactly which
+            skills you match and which you're missing, so you always know where to focus next.
+          </p>
+          <ul className="mt-6 space-y-3">
+            {[
+              "Weighted by how important each skill is to the role",
+              "Forgiving for juniors — a claimed skill always counts",
+              "The same engine ranks candidates for employers",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3 text-sm text-slate-700">
+                <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-brand-100 text-brand-700">
+                  <Check className="h-3.5 w-3.5" />
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Two photo+text rows: one for seekers, one for employers. */
+function AudienceSection() {
+  return (
+    <section className="border-t border-slate-100 bg-slate-50/60">
+      <div className="mx-auto max-w-6xl space-y-20 px-4 py-20">
+        {/* For seekers */}
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <Photo src="/images/community.jpg" className="aspect-[4/3]" />
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+              <Users className="h-3.5 w-3.5" /> For job seekers
+            </span>
+            <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-900">
+              Built for graduates entering the workforce.
+            </h2>
+            <p className="mt-4 text-slate-600">
+              Register with your institution email to earn a verified badge, showcase your skills,
+              GitHub and education, and get discovered by employers who need exactly what you've
+              built — no years of experience required.
+            </p>
+            <Link to="/register" className="btn-primary mt-6 w-fit">
+              Create your profile <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+
+        {/* For employers */}
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <Photo src="/images/employers.jpg" className="aspect-[4/3] lg:order-2" />
+          <div className="lg:order-1">
+            <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+              <Briefcase className="h-3.5 w-3.5" /> For employers
+            </span>
+            <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-900">
+              Hire the right graduate, faster.
+            </h2>
+            <p className="mt-4 text-slate-600">
+              Post a role with weighted skill criteria and review applicants ranked by fit — plus
+              suggested candidates from the wider talent pool who match, even if they haven't
+              applied yet.
+            </p>
+            <Link to="/register" className="btn-secondary mt-6 w-fit">
+              Post a listing <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
