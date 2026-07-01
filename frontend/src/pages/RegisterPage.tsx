@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { apiErrorMessage } from "../lib/apiClient";
 import type { UserRole } from "../types";
+import { AuthShell } from "../components/AuthShell";
 import { Briefcase, User } from "../components/icons";
 import { ErrorText, Spinner } from "../components/ui";
 
@@ -37,12 +38,21 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md py-6">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Create your account</h1>
-        <p className="mt-1 text-sm text-slate-500">Join Opportunity Nexus in under a minute.</p>
-      </div>
-      <form onSubmit={handleSubmit} className="card space-y-4">
+    <AuthShell
+      title="Create your account"
+      subtitle="Join Opportunity Nexus in under a minute."
+      altHref="/login"
+      altLabel="Log in"
+      footer={
+        <>
+          Already have an account?{" "}
+          <Link to="/login" className="font-semibold text-brand-600 hover:text-brand-700">
+            Log in
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
         {error && <ErrorText>{error}</ErrorText>}
 
         <div className="grid grid-cols-2 gap-2">
@@ -107,12 +117,6 @@ export function RegisterPage() {
           )}
         </button>
       </form>
-      <p className="mt-4 text-center text-sm text-slate-600">
-        Already have an account?{" "}
-        <Link to="/login" className="font-semibold text-brand-600 hover:text-brand-700">
-          Log in
-        </Link>
-      </p>
-    </div>
+    </AuthShell>
   );
 }
